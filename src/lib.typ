@@ -63,9 +63,7 @@
   let tax = total * tax-rate
   let total-with-tax = total + tax
 
-  if font != none {
-    set text(font: font)
-  }
+  set text(font: font) if font != none
   set text(size: 10pt)
   [ = 請求書 ]
   v(1em)
