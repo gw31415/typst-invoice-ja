@@ -37,7 +37,7 @@
 //                                    account [string]: 口座番号, name [string]: 口座名義),
 //                                    required
 // comment: 備考欄
-// items [[]dictionary]: [(name [string]: 商品名, amount [int]: 数量, price [int]: 単価), ...]
+// items [[]dictionary]: [(name [string]: 商品名, amount [int]: 数量, price [int]: 単価, unit [string]: 単位), ...]
 
 #let doc(
   font: none,
@@ -198,7 +198,7 @@
     ),
     ..for item in items {(
       item.name,
-      [ #{add_comma(item.amount)}個 ],
+      [ #{add_comma(item.amount)}#{if "unit" in item.keys() { item.unit } else { "個" }} ],
       [ #{add_comma(item.price)}円 ],
       [ #{add_comma(item.amount * item.price)}円 ],
     )}
