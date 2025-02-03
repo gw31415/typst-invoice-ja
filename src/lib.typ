@@ -2,12 +2,6 @@
   let year = date.year()
   let month = date.month()
 
-  if month == 12 {
-    year += 1
-    month = 1
-  } else {
-    month += 1
-  }
   let day = (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31).at(month - 1)
   if month == 2 and calc.rem(year, 4) == 0 and (calc.rem(year, 100) != 0 or calc.rem(year, 400) == 0 ) {
     day += 1
