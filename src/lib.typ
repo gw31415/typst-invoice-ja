@@ -59,9 +59,9 @@
   comment: none,
   items: (),
 ) = {
-  let total= items.map(item => item.price * item.amount).sum(default: 0)
-  let tax = total * tax-rate
-  let total-with-tax = total + tax
+  let naive-total= items.map(item => item.price * item.amount).sum(default: 0)
+  let tax = calc.floor(naive-total * tax-rate)
+  let total-with-tax = naive-total + tax
 
   set text(font: font) if font != none
   set text(size: 10pt)
@@ -101,7 +101,7 @@
         [ 小計 ],
         [ 消費税 ],
         [ 合計金額 ],
-        [ #{add_comma(total)} 円 ],
+        [ #{add_comma(naive-total)} 円 ],
         [ #{add_comma(tax)} 円 ],
         [ #{add_comma(total-with-tax)} 円 ],
       )
