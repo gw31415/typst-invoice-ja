@@ -27,7 +27,7 @@
 // date [datetime]: 発行日
 // due-date [datetime]: 支払期限
 // serial [int]: 請求書番号に振るシリアル・ナンバー
-// tax-rate [float]: 消費税率
+// tax-rate [decimal]: 消費税率
 // client-name [string]: クライアント名, required
 // client-details [string]: クライアント詳細, required
 // vendor-name [string]: 発行者名, required
@@ -44,7 +44,7 @@
   date: datetime.today(),
   due-date: end_of_month(datetime.today()),
   serial: 1,
-  tax-rate: .1,
+  tax-rate: decimal("0.1"),
   client-name: none,
   client-details: none,
   vendor-name: none,
