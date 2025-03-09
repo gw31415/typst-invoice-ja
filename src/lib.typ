@@ -28,6 +28,7 @@
 // due-date [datetime]: 支払期限
 // serial [int]: 請求書番号に振るシリアル・ナンバー
 // tax-rate [decimal]: 消費税率
+// include-tax [boolean]: 詳細の項目が内税か否か
 // client-name [string]: クライアント名, required
 // client-details [string]: クライアント詳細, required
 // vendor-name [string]: 発行者名, required
@@ -45,6 +46,7 @@
   due-date: end_of_month(datetime.today()),
   serial: 1,
   tax-rate: decimal("0.1"),
+  include-tax: false,
   client-name: none,
   client-details: none,
   vendor-name: none,
@@ -59,9 +61,10 @@
   comment: none,
   items: (),
 ) = {
-  let naive-total= items.map(item => item.price * item.amount).sum(default: 0)
-  let tax = calc.floor(naive-total * tax-rate)
-  let total-with-tax = naive-total + tax
+  let naive-total = items.map(item => item.price * item.amount).sum(default: 0)
+  let tax = calc.floor(naive-total * tax-rate / if include-tax { 1 + tax-rate } else { 1 })
+  let total-without-tax = if include-tax { naive-total - tax } else { naive-total }
+  let total-with-tax = total-without-tax + tax
 
   set text(font: font) if font != none
   set text(size: 10pt)
@@ -101,7 +104,7 @@
         [ 小計 ],
         [ 消費税 ],
         [ 合計金額 ],
-        [ #{add_comma(naive-total)} 円 ],
+        [ #{add_comma(total-without-tax)} 円 ],
         [ #{add_comma(tax)} 円 ],
         [ #{add_comma(total-with-tax)} 円 ],
       )
@@ -194,7 +197,14 @@
       bottom: 1pt,
     ),
     table.header(
-      [ 詳細 ], [ 数量 ], [ 単価 ], [ 金額 ]
+      [ 詳細 ], [ 数量 ], [ 単価 ], [
+        金額
+        #if include-tax {
+          [ (内税) ]
+        } else {
+          [ (外税) ]
+        }
+      ]
     ),
     ..for item in items {(
       item.name,
