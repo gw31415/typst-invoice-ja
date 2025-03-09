@@ -38,7 +38,7 @@
 //                                    account [string]: 口座番号, name [string]: 口座名義),
 //                                    required
 // comment: 備考欄
-// items [[]dictionary]: [(name [string]: 商品名, amount [int]: 数量, price [int]: 単価, unit [string]: 単位), ...]
+// items [[]dictionary]: [(name [string]: 商品名, amount [int | float | decimal]: 数量, price [int | float | decimal]: 単価, unit [string]: 単位), ...]
 
 #let doc(
   font: none,
@@ -61,7 +61,8 @@
   comment: none,
   items: (),
 ) = {
-  let naive-total = items.map(item => item.price * item.amount).sum(default: 0)
+  let calc_item_price = item => calc.floor(item.price * item.amount)
+  let naive-total = items.map(calc_item_price).sum(default: 0)
   let tax = calc.floor(naive-total * tax-rate / if include-tax { 1 + tax-rate } else { 1 })
   let total-without-tax = if include-tax { naive-total - tax } else { naive-total }
   let total-with-tax = total-without-tax + tax
@@ -210,7 +211,7 @@
       item.name,
       [ #{add_comma(item.amount)}#{if "unit" in item.keys() { item.unit } else { "個" }} ],
       [ #{add_comma(item.price)}円 ],
-      [ #{add_comma(item.amount * item.price)}円 ],
+      [ #{add_comma(calc_item_price(item))}円 ],
     )}
   )
 
